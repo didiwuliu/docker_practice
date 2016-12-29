@@ -1,5 +1,5 @@
 ## 使用 Supervisor 来管理进程
-Docker 容器在启动的时候开启单个进程，比如，一个 ssh 或者 apache 的 daemon 服务。但我们经常需要在一个机器上开启多个服务，这可以有很多方法，最简单的就是把多个启动命令方到一个启动脚本里面，启动的时候直接启动这个脚本，另外就是安装进程管理工具。
+Docker 容器在启动的时候开启单个进程，比如，一个 ssh 或者 apache 的 daemon 服务。但我们经常需要在一个机器上开启多个服务，这可以有很多方法，最简单的就是把多个启动命令放到一个启动脚本里面，启动的时候直接启动这个脚本，另外就是安装进程管理工具。
 
 本小节将使用进程管理工具 supervisor 来管理容器中的多个进程。使用 Supervisor 可以更好的控制、管理、重启我们希望运行的进程。在这里我们演示一下如何同时使用 ssh 和 apache 服务。
 
@@ -13,9 +13,10 @@ RUN apt-get update
 RUN apt-get upgrade -y
 ```
 
-安装 supervisor
-安装 ssh、apache 和 supervisor。
+### 安装 ssh、apache 和 supervisor
 ```
+RUN apt-get install -y --force-yes  perl-base=5.14.2-6ubuntu2
+RUN apt-get install -y apache2.2-common
 RUN apt-get install -y openssh-server apache2 supervisor
 RUN mkdir -p /var/run/sshd
 RUN mkdir -p /var/log/supervisor
@@ -53,7 +54,7 @@ $ sudo docker build -t test/supervisord .
 ```
 启动 supervisor 容器。
 ```
-$ sudo docker run -p 22 -p 80 -t -i test/supervisords
+$ sudo docker run -p 22 -p 80 -t -i test/supervisord
 2013-11-25 18:53:22,312 CRIT Supervisor running as root (no user in config file)
 2013-11-25 18:53:22,312 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
 2013-11-25 18:53:22,342 INFO supervisord started with pid 1
@@ -62,4 +63,4 @@ $ sudo docker run -p 22 -p 80 -t -i test/supervisords
 ```
 使用 `docker run` 来启动我们创建的容器。使用多个 `-p` 来映射多个端口，这样我们就能同时访问 ssh 和 apache 服务了。
 
-可以使用这个方法创建一个只有 ssh 服务的基础镜像，之后创建镜像可以以这个镜像为基础来创建
+可以使用这个方法创建一个只有 ssh 服务的基础镜像，之后创建镜像可以使用这个镜像为基础来创建

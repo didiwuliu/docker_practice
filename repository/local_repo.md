@@ -35,7 +35,7 @@ $ sudo docker run -d -p 5000:5000 -v /opt/data/registry:/tmp/registry registry
 ```
 
 #### 本地安装
-对于 Ubuntu 或 CentOS 等发型包，可以直接通过源安装。
+对于 Ubuntu 或 CentOS 等发行版，可以直接通过源安装。
 * Ubuntu
 ```
 $ sudo apt-get install -y build-essential python-dev libevent-dev python-pip liblzma-dev
@@ -51,10 +51,10 @@ $ sudo python-pip install docker-registry
 ```
 $ sudo apt-get install build-essential python-dev libevent-dev python-pip libssl-dev liblzma-dev libffi-dev
 $ git clone https://github.com/docker/docker-registry.git
-$ cd git-registry
-$ sudo pip install .
+$ cd docker-registry
+$ sudo python setup.py install
 ```
-然后修改配置文件，主要修改dev模板段的 `storage_path` 到本地的存储仓库的路径。
+然后修改配置文件，主要修改 dev 模板段的 `storage_path` 到本地的存储仓库的路径。
 ```
 $ cp config/config_sample.yml config/config.yml
 ```
@@ -66,7 +66,7 @@ $ sudo gunicorn -c contrib/gunicorn.py docker_registry.wsgi:application
 ```
 $ sudo gunicorn --access-logfile - --error-logfile - -k gevent -b 0.0.0.0:5000 -w 4 --max-requests 100 docker_registry.wsgi:application
 ```
-此时使用访问本地的 5000 端口，看到输出 docker-registry 的版本信息说明运行成功。
+此时使用 curl 访问本地的 5000 端口，看到输出 docker-registry 的版本信息说明运行成功。
 
 *注：`config/config_sample.yml` 文件是示例配置文件。
 

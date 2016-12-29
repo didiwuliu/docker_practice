@@ -3,3 +3,9 @@
 *.tmp
 .idea/
 _book/
+*.swp
+*.edx
+.DS_Store
+
+
+node_modules/
